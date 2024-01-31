@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59a24bb2-ce0e-49bd-b6b5-7e58c049d79f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/show_img/CCNN.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/show_img/EEGNet.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/EEGNet_Test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/SSVEPNet_Test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +33,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -45,26 +44,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.CCNN_Test.executor": "Run",
-    "Python.Classifier_Test (1).executor": "Run",
-    "Python.EEGNet_Test.executor": "Run",
-    "Python.SSVEPNet_Test.executor": "Run",
-    "Python.global_config.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Pycharm_Workspace/DL_Classifier/show_img",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.CCNN_Test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Classifier_Test (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.EEGNet_Test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SSVEPNet_Test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.global_config.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Pycharm_Workspace/DL_Classifier&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Pycharm_Workspace\DL_Classifier\show_img" />
@@ -221,6 +220,8 @@
       <workItem from="1706603605241" duration="5890000" />
       <workItem from="1706664005702" duration="9834000" />
       <workItem from="1706678906240" duration="1906000" />
+      <workItem from="1706691476176" duration="1669000" />
+      <workItem from="1706696210471" duration="3000" />
     </task>
     <servers />
   </component>
