@@ -1,0 +1,67 @@
+algorithm: SSVEPNet
+
+# Parameters for training procedure
+train_param:
+  Kf: 1                  # k-fold cross validation
+  UD: 0                  # -1——Unsupervised, 0——User-Dependent；1——User-Independent
+  ratio: 3               # -1——Training-Free, 1——80% vs 20%;2——50% vs 50%;3——20% vs 80%(UD Approach)
+                         # 0 or else——(N-1)/N vs 1/N(UI Approach)
+
+# Parameters for ssvep data
+data_param:
+  ws: 1.0                      # window size of ssvep
+  Nh: 180                      # number of trial
+  Nc: 8                        # number of channel
+  Fs: 256                      # frequency of sample
+  Nt: 1024                     # number of sample
+  Nf: 12                       # number of stimulus
+  Ns: 10                       # number of subjects
+
+
+# Parameters for DL-based methods
+EEGNet:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                       # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: false             # learning rate scheduler
+
+CCNN:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                       # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: false             # learning rate scheduler
+
+FBtCNN:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                       # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: false             # learning rate scheduler
+
+ConvCA:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                       # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: false             # learning rate scheduler
+
+SSVEPNet:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.01                       # learning rate
+  wd: 0.0003                   # weight decay
+  lr_jitter: true             # learning rate scheduler
+
+SSVEPformer:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                       # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: false             # learning rate scheduler
+
+
+
+
+
