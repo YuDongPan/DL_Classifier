@@ -1,11 +1,12 @@
 # Designer:Ethan Pan
 # Coder:God's hand
 # Time:2024/1/31 10:53
+import numpy as np
 import torch
 from torch import nn
-from Model import EEGNet, CCNN, SSVEPNet
+from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA
 from etc.global_config import config
-from Utils import Constraint, LossFunction
+from Utils import Constraint, LossFunction, Script
 
 def data_preprocess(EEGData_Train, EEGData_Test):
     '''
@@ -20,25 +21,60 @@ def data_preprocess(EEGData_Train, EEGData_Test):
     algorithm = config['algorithm']
     ws = config["data_param"]["ws"]
     Fs = config["data_param"]["Fs"]
+    Nf = config["data_param"]["Nf"]
     bz = config[algorithm]["bz"]
 
+
+    '''Loading Training Data'''
     EEGData_Train, EEGLabel_Train = EEGData_Train[:]
     EEGData_Train = EEGData_Train[:, :, :, :int(Fs * ws)]
-    if algorithm == "CCNN":
-        EEGData_Train = CCNN.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
-        EEGData_Train = torch.from_numpy(EEGData_Train)
-    print("EEGData_Train.shape", EEGData_Train.shape)
-    print("EEGLabel_Train.shape", EEGLabel_Train.shape)
-    EEGData_Train = torch.utils.data.TensorDataset(EEGData_Train, EEGLabel_Train)
 
+    if algorithm == "ConvCA":
+        EEGData_Train = torch.swapaxes(EEGData_Train, axis0=2, axis1=3) # (Nh, 1, Nt, Nc)
+        EEGTemp_Train = Script.get_Template_Signal(EEGData_Train, Nf)  # (Nf × 1 × Nt × Nc)
+        EEGTemp_Train = torch.swapaxes(EEGTemp_Train, axis0=0, axis1=1)  # (1 × Nf × Nt × Nc)
+        EEGTemp_Train = EEGTemp_Train.repeat((EEGData_Train.shape[0], 1, 1, 1))  # (Nh × Nf × Nt × Nc)
+        EEGTemp_Train = torch.swapaxes(EEGTemp_Train, axis0=1, axis1=3)  # (Nh × Nc × Nt × Nf)
+
+        print("EEGData_Train.shape", EEGData_Train.shape)
+        print("EEGTemp_Train.shape", EEGTemp_Train.shape)
+        print("EEGLabel_Train.shape", EEGLabel_Train.shape)
+        EEGData_Train = torch.utils.data.TensorDataset(EEGData_Train, EEGTemp_Train, EEGLabel_Train)
+
+    else:
+        if algorithm == "CCNN":
+            EEGData_Train = CCNN.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
+            EEGData_Train = torch.from_numpy(EEGData_Train)
+
+        print("EEGData_Train.shape", EEGData_Train.shape)
+        print("EEGLabel_Train.shape", EEGLabel_Train.shape)
+        EEGData_Train = torch.utils.data.TensorDataset(EEGData_Train, EEGLabel_Train)
+
+
+    '''Loading Testing Data'''
     EEGData_Test, EEGLabel_Test = EEGData_Test[:]
     EEGData_Test = EEGData_Test[:, :, :, :int(Fs * ws)]
-    if algorithm == "CCNN":
-        EEGData_Test = CCNN.complex_spectrum_features(EEGData_Test.numpy(), FFT_PARAMS=[Fs, ws])
-        EEGData_Test = torch.from_numpy(EEGData_Test)
-    print("EEGData_Test.shape", EEGData_Test.shape)
-    print("EEGLabel_Test.shape", EEGLabel_Test.shape)
-    EEGData_Test = torch.utils.data.TensorDataset(EEGData_Test, EEGLabel_Test)
+
+    if algorithm == "ConvCA":
+        EEGData_Test = torch.swapaxes(EEGData_Test, axis0=2, axis1=3)  # (Nh, 1, Nt, Nc)
+        EEGTemp_Test = Script.get_Template_Signal(EEGData_Test, Nf)  # (Nf × 1 × Nt × Nc)
+        EEGTemp_Test = torch.swapaxes(EEGTemp_Test, axis0=0, axis1=1)  # (1 × Nf × Nt × Nc)
+        EEGTemp_Test = EEGTemp_Test.repeat((EEGData_Test.shape[0], 1, 1, 1))  # (Nh × Nf × Nt × Nc)
+        EEGTemp_Test = torch.swapaxes(EEGTemp_Test, axis0=1, axis1=3)  # (Nh × Nc × Nt × Nf)
+
+        print("EEGData_Test.shape", EEGData_Test.shape)
+        print("EEGTemp_Test.shape", EEGTemp_Test.shape)
+        print("EEGLabel_Test.shape", EEGLabel_Test.shape)
+        EEGData_Test = torch.utils.data.TensorDataset(EEGData_Test, EEGTemp_Test, EEGLabel_Test)
+
+    else:
+        if algorithm == "CCNN":
+            EEGData_Test = CCNN.complex_spectrum_features(EEGData_Test.numpy(), FFT_PARAMS=[Fs, ws])
+            EEGData_Test = torch.from_numpy(EEGData_Test)
+
+        print("EEGData_Test.shape", EEGData_Test.shape)
+        print("EEGLabel_Test.shape", EEGLabel_Test.shape)
+        EEGData_Test = torch.utils.data.TensorDataset(EEGData_Test, EEGLabel_Test)
 
     # Create DataLoader for the Dataset
     eeg_train_dataloader = torch.utils.data.DataLoader(dataset=EEGData_Train, batch_size=bz, shuffle=True,
@@ -63,15 +99,22 @@ def build_model(devices):
     ws = config["data_param"]['ws']
     lr = config[algorithm]['lr']
     wd = config[algorithm]['wd']
+    Nt = int(Fs * ws)
 
     if algorithm == "EEGNet":
-        net = EEGNet.EEGNet(Nc, int(Fs * ws), Nf)
+        net = EEGNet.EEGNet(Nc, Nt, Nf)
 
     elif algorithm == "CCNN":
         net = CCNN.CNN(Nc, 220, Nf)
 
+    elif algorithm == "FBtCNN":
+        net = FBtCNN.tCNN(Nc, Nt, Nf, Fs)
+
+    elif algorithm == "ConvCA":
+        net = ConvCA.convca(Nc, Nt, Nf)
+
     elif algorithm == "SSVEPNet":
-        net = SSVEPNet.ESNet(Nc, int(Fs * ws), Nf)
+        net = SSVEPNet.ESNet(Nc, Nt, Nf)
         net = Constraint.Spectral_Normalization(net)
 
     net = net.to(devices)

@@ -9,6 +9,8 @@ from etc.global_config import config
 
 # 1、Define parameters of eeg
 algorithm = config['algorithm']
+print(f"{'*' * 20} Current Algorithm usage: {algorithm} {'*' * 20}")
+
 '''Parameters for training procedure'''
 Kf = config["train_param"]['Kf']
 UD = config["train_param"]['UD']
@@ -19,7 +21,6 @@ ws = config["data_param"]["ws"]
 Nh = config["data_param"]['Nh']
 Nc = config["data_param"]['Nc']
 Fs = config["data_param"]['Fs']
-Nt = config["data_param"]['Nt']
 Nf = config["data_param"]['Nf']
 Ns = config["data_param"]['Ns']
 
@@ -46,8 +47,8 @@ for fold_num in range(Kf):
         # EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=opt.Kf,
         #                                          mode='train')
 
-        EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='train')
-        EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='test')
+        EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.8, mode='train')
+        EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.8, mode='test')
 
         # -----------Inter-Subject Experiments--------------
         # EEGData_Train = EEGDataset.getSSVEP12Inter(subject=testSubject, mode='train')
