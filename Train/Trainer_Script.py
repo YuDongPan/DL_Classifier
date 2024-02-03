@@ -4,7 +4,7 @@
 import numpy as np
 import torch
 from torch import nn
-from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA
+from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA, SSVEPformer
 from etc.global_config import config
 from Utils import Constraint, LossFunction, Script
 
@@ -45,6 +45,10 @@ def data_preprocess(EEGData_Train, EEGData_Test):
         if algorithm == "CCNN":
             EEGData_Train = CCNN.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
             EEGData_Train = torch.from_numpy(EEGData_Train)
+        elif algorithm == "SSVEPformer":
+            EEGData_Train = SSVEPformer.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
+            EEGData_Train = torch.from_numpy(EEGData_Train)
+            EEGData_Train = EEGData_Train.squeeze(1)
 
         print("EEGData_Train.shape", EEGData_Train.shape)
         print("EEGLabel_Train.shape", EEGLabel_Train.shape)
@@ -71,6 +75,11 @@ def data_preprocess(EEGData_Train, EEGData_Test):
         if algorithm == "CCNN":
             EEGData_Test = CCNN.complex_spectrum_features(EEGData_Test.numpy(), FFT_PARAMS=[Fs, ws])
             EEGData_Test = torch.from_numpy(EEGData_Test)
+
+        elif algorithm == "SSVEPformer":
+            EEGData_Test = SSVEPformer.complex_spectrum_features(EEGData_Test.numpy(), FFT_PARAMS=[Fs, ws])
+            EEGData_Test = torch.from_numpy(EEGData_Test)
+            EEGData_Test = EEGData_Test.squeeze(1)
 
         print("EEGData_Test.shape", EEGData_Test.shape)
         print("EEGLabel_Test.shape", EEGLabel_Test.shape)
@@ -113,6 +122,11 @@ def build_model(devices):
     elif algorithm == "ConvCA":
         net = ConvCA.convca(Nc, Nt, Nf)
 
+    elif algorithm == "SSVEPformer":
+        net = SSVEPformer.SSVEPformer(depth=2, attention_kernal_length=31, chs_num=Nc, class_num=Nf,
+                                      dropout=0.5)
+        net.apply(Constraint.initialize_weights)
+
     elif algorithm == "SSVEPNet":
         net = SSVEPNet.ESNet(Nc, Nt, Nf)
         net = Constraint.Spectral_Normalization(net)
@@ -124,6 +138,9 @@ def build_model(devices):
     else:
         criterion = nn.CrossEntropyLoss(reduction="none")
 
-    optimizer = torch.optim.Adam(net.parameters(), lr=lr, betas=(0.9, 0.999), weight_decay=wd)
+    if algorithm == "SSVEPformer":
+        optimizer = torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd, momentum=0.9)
+    else:
+        optimizer = torch.optim.Adam(net.parameters(), lr=lr, betas=(0.9, 0.999), weight_decay=wd)
 
     return net, criterion, optimizer

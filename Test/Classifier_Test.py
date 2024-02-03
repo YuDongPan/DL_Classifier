@@ -47,8 +47,8 @@ for fold_num in range(Kf):
         # EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=opt.Kf,
         #                                          mode='train')
 
-        EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.8, mode='train')
-        EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.8, mode='test')
+        EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='train')
+        EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='test')
 
         # -----------Inter-Subject Experiments--------------
         # EEGData_Train = EEGDataset.getSSVEP12Inter(subject=testSubject, mode='train')
