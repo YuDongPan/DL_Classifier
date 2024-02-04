@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from torch import nn
 from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA, SSVEPformer
-from etc.global_config import config
 from Utils import Constraint, LossFunction, Script
+from etc.global_config import config
 
 def data_preprocess(EEGData_Train, EEGData_Test):
     '''
