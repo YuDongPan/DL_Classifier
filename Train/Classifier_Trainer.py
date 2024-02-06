@@ -6,8 +6,15 @@ import time
 from etc.global_config import config
 
 def train_on_batch(num_epochs, train_iter, test_iter, optimizer, criterion, net, device, lr_jitter=False):
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs * len(train_iter), eta_min=5e-6)
     algorithm = config['algorithm']
+    if algorithm == "DDGCNN":
+        lr_decay_rate = config[algorithm]['lr_decay_rate']
+        optim_patience = config[algorithm]['optim_patience']
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=lr_decay_rate,
+                                                               patience=optim_patience, verbose=True, eps=1e-08)
+    else:
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs * len(train_iter),
+                                                               eta_min=5e-6)
 
     for epoch in range(num_epochs):
         # ==================================training procedure==========================================================
@@ -32,12 +39,15 @@ def train_on_batch(num_epochs, train_iter, test_iter, optimizer, criterion, net,
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            if lr_jitter:
+            if lr_jitter and algorithm != "DDGCNN":
                 scheduler.step()
             sum_loss += loss.item() / y.shape[0]
             sum_acc += (y == y_hat.argmax(dim=-1)).float().mean()
+
         train_loss = sum_loss / len(train_iter)
         train_acc = sum_acc / len(train_iter)
+        if lr_jitter and algorithm == "DDGCNN":
+            scheduler.step(train_acc)
 
         # ==================================testing procedure==========================================================
         if epoch == num_epochs - 1:

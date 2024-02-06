@@ -24,6 +24,8 @@ def run():
     elif ratio == 2:
         Kf = 2
 
+    Kf = 1
+
     '''Parameters for ssvep data'''
     ws = config["data_param"]["ws"]
     Ns = config["data_param"]['Ns']
@@ -43,18 +45,18 @@ def run():
             # **************************************** #
             '''12-class SSVEP Dataset'''
             # -----------Intra-Subject Experiments--------------
-            EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=Kf,
-                                                       mode='train')
-            EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=Kf,
-                                                      mode='test')
+            # EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=Kf,
+            #                                            mode='train')
+            # EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, KFold=fold_num, n_splits=Kf,
+            #                                           mode='test')
+            #
+            # if ratio == 3:
+            #     Temp = EEGData_Train
+            #     EEGData_Train = EEGData_Test
+            #     EEGData_Test = Temp
 
-            if ratio == 3:
-                Temp = EEGData_Train
-                EEGData_Train = EEGData_Test
-                EEGData_Test = Temp
-
-            # EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='train')
-            # EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='test')
+            EEGData_Train = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='train')
+            EEGData_Test = EEGDataset.getSSVEP12Intra(subject=testSubject, train_ratio=0.2, mode='test')
 
             # -----------Inter-Subject Experiments--------------
             # EEGData_Train = EEGDataset.getSSVEP12Inter(subject=testSubject, mode='train')

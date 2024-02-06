@@ -1,4 +1,4 @@
-algorithm: SSVEPformer
+algorithm: DDGCNN
 
 # Parameters for training procedure
 train_param:
@@ -58,6 +58,20 @@ SSVEPformer:
   lr: 0.001                       # learning rate
   wd: 0.0001                   # weight decay
   lr_jitter: false             # learning rate scheduler
+
+DDGCNN:
+  epochs: 500                  # number of epochs
+  bz: 30                     # batch size
+  lr: 0.001                   # learning rate
+  wd: 0.0001                   # weight decay
+  lr_jitter: true             # learning rate scheduler
+  lr_decay_rate: 0.75         # learning rate decay rate
+  optim_patience: 300        # optimizer patience
+  trans_class: DCD           # {DCD, linear, normal_conv}
+  act: leakyrelu             # activation layer {relu, prelu, leakyrelu}
+  norm: layer                # {batch, layer, instance} normalization
+  n_filters: 128            # 64 or 128
+
 
 
 

@@ -4,7 +4,7 @@
 import numpy as np
 import torch
 from torch import nn
-from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA, SSVEPformer
+from Model import EEGNet, CCNN, SSVEPNet, FBtCNN, ConvCA, SSVEPformer, DDGCNN
 from Utils import Constraint, LossFunction, Script
 from etc.global_config import config
 
@@ -45,10 +45,14 @@ def data_preprocess(EEGData_Train, EEGData_Test):
         if algorithm == "CCNN":
             EEGData_Train = CCNN.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
             EEGData_Train = torch.from_numpy(EEGData_Train)
+
         elif algorithm == "SSVEPformer":
             EEGData_Train = SSVEPformer.complex_spectrum_features(EEGData_Train.numpy(), FFT_PARAMS=[Fs, ws])
             EEGData_Train = torch.from_numpy(EEGData_Train)
             EEGData_Train = EEGData_Train.squeeze(1)
+
+        elif algorithm == "DDGCNN":
+            EEGData_Train = torch.swapaxes(EEGData_Train, axis0=1, axis1=3)  # (Nh, 1, Nc, Nt) => (Nh, Nt, Nc, 1)
 
         print("EEGData_Train.shape", EEGData_Train.shape)
         print("EEGLabel_Train.shape", EEGLabel_Train.shape)
@@ -80,6 +84,9 @@ def data_preprocess(EEGData_Train, EEGData_Test):
             EEGData_Test = SSVEPformer.complex_spectrum_features(EEGData_Test.numpy(), FFT_PARAMS=[Fs, ws])
             EEGData_Test = torch.from_numpy(EEGData_Test)
             EEGData_Test = EEGData_Test.squeeze(1)
+
+        elif algorithm == "DDGCNN":
+            EEGData_Test = torch.swapaxes(EEGData_Test, axis0=1, axis1=3)  # (Nh, 1, Nc, Nt) => (Nh, Nt, Nc, 1)
 
         print("EEGData_Test.shape", EEGData_Test.shape)
         print("EEGLabel_Test.shape", EEGLabel_Test.shape)
@@ -130,6 +137,15 @@ def build_model(devices):
     elif algorithm == "SSVEPNet":
         net = SSVEPNet.ESNet(Nc, Nt, Nf)
         net = Constraint.Spectral_Normalization(net)
+
+    elif algorithm == "DDGCNN":
+        bz = config[algorithm]["bz"]
+        norm = config[algorithm]["norm"]
+        act = config[algorithm]["act"]
+        trans_class = config[algorithm]["trans_class"]
+        n_filters = config[algorithm]["n_filters"]
+        net = DDGCNN.DenseDDGCNN([bz, Nt, Nc], k_adj=3, num_out=n_filters, dropout=0.5, n_blocks=3, nclass=Nf,
+                                 bias=False, norm=norm, act=act, trans_class=trans_class, device=devices)
 
     net = net.to(devices)
 
