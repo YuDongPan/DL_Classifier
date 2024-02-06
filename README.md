@@ -30,7 +30,7 @@ In recent years, deep learning technology has gradually been favored by research
 
 - **DDGCNN**: In the procedure of classification of multi-channel EEG, the processing of multi-channel electroencephalogram (EEG) data introduces challenges due to its non-Euclidean characteristic, necessitating methodologies that account for inter-channel topological relations.Thereinto, researchers introduced the Dynamic Decomposition Graph Convolutional Neural Network (DDGCNN) designed for the classification of SSVEP EEG signals. The DDGCNN incorporates layerwise dynamic graphs to address the oversmoothing issue in Graph Convolutional Networks (GCNs), employing a dense connection mechanism to mitigate the gradient vanishing problem. Furthermore, the DDGCNN enhance the traditional linear transformation inherent in GCNs with graph dynamic fusion, thereby elevating feature extraction and adaptive aggregation capabilities. The experimental results demonstrate the effectiveness of DDGCNN in learning and extracting features from EEG topological structure.
 
-![image](show_img/SSVEPformer.png)
+![image](show_img/DDGCNN.png)
 
 # Running Environment
 * Setup a virtual environment with python 3.8 or newer
