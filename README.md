@@ -40,7 +40,11 @@ In recent years, deep learning technology has gradually been favored by research
 pip install -r Resource/requirements.txt
 ```
 
-## Train and Test
+# Train and Test
+* Edit the config file (etc/config.yaml), choose the algorithm you want to run.
+* Edit the config file, set the parameters for the training procedure and the specific hyperparameters for the algorithm.
+* Run `Classifier_Test.py`
+
 ```
 cd Test
 python Classifier_Test.py
