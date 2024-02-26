@@ -51,6 +51,7 @@ SSVEPNet:
   lr: 0.01                       # learning rate
   wd: 0.0003                   # weight decay
   lr_jitter: true             # learning rate scheduler
+  stimulus_type: 4            # 4-class or 12-class
 
 SSVEPformer:
   epochs: 500                  # number of epochs
