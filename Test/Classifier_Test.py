@@ -2,7 +2,7 @@
 # Coder:God's hand
 # Time:2024/1/30 17:16
 import sys
-
+import time
 sys.path.append('../')
 import torch
 import Utils.EEGDataset as EEGDataset
@@ -36,6 +36,7 @@ def run():
 
     devices = "cuda" if torch.cuda.is_available() else "cpu"
 
+    start_time = time.time()
     # 2、Start Training
     final_acc_list = []
     for fold_num in range(Kf):
@@ -72,6 +73,10 @@ def run():
             final_test_acc_list.append(test_acc)
 
         final_acc_list.append(final_test_acc_list)
+
+    end_time = time.time()
+
+    print("cost_time:", end_time - start_time)
 
     # 3、Plot Result
     Ploter.plot_save_Result(final_acc_list, model_name=algorithm, dataset='DatasetA', UD=UD, ratio=ratio,
