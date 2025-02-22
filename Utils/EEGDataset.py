@@ -64,7 +64,7 @@ class getSSVEP12Inter(Dataset):
     def read_EEGLabel(self):
         label_data = self.get_DataLabel(1)
         for i in range(1, 10):
-            single_subject_label_data = self.get_DataLabel(i)
+            single_subject_label_data = self.get_DataLabel(i + 1)
             label_data = torch.cat((label_data, single_subject_label_data), dim=0)
         return label_data
 
